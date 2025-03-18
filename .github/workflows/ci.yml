@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🛎️ Checkout le code
+      - name: 🛎️ Checkout le code du frontend
         uses: actions/checkout@v4
 
       - name: 🏗️ Installer Node.js
@@ -78,6 +78,21 @@ jobs:
 
       - name: 🏗️ Lancer le build pour les tests E2E
         run: npm run build
+
+      - name: 🛎️ Cloner le backend
+        run: git clone ${{ secrets.BACKEND_REPO_URL }} backend
+
+      - name: 🛠️ Démarrer le backend avec Docker Compose
+        working-directory: backend
+        run: docker-compose up -d
+
+      - name: 🛑 Attendre que le backend soit prêt
+        run: |
+          for i in {1..30}; do
+            curl --fail http://localhost:8000/health && break
+            echo "Backend non prêt, attente..."
+            sleep 5
+          done
 
       - name: 🚀 Démarrer le serveur de prévisualisation
         run: npm run preview &
