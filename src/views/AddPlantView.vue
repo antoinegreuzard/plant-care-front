@@ -72,12 +72,21 @@ const submitForm = async () => {
         location: ""
       }
     }
-  } catch (error: any) {
-    if (error.response?.status === 401) {
-      message.value = "Vous devez être connecté pour ajouter une plante."
-      await router.push("/login")
+   } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.message)
+    }
+
+    if (typeof error === "object" && error !== null && "response" in error) {
+      const err = error as { response?: { status: number } }
+      if (err.response?.status === 401) {
+        message.value = "Vous devez être connecté pour ajouter une plante."
+        await router.push("/login")
+      } else {
+        message.value = "Erreur lors de l'ajout."
+      }
     } else {
-      message.value = "Erreur lors de l'ajout."
+      message.value = "Une erreur inconnue est survenue."
     }
   }
 }

@@ -35,10 +35,19 @@ const submitLogin = async() => {
     const response = await api.post("token/", form.value)
     if (response.status === 200) {
       authStore.login(response.data.access)
-      router.push("/")
+      await router.push("/")
     }
-  } catch (error) {
-    errorMessage.value = "Identifiants incorrects, veuillez réessayer."
+  } catch (error: unknown) {
+    if (typeof error === "object" && error !== null && "response" in error) {
+      const err = error as { response?: { status: number } }
+      if (err.response?.status === 401) {
+        errorMessage.value = "Identifiants incorrects, veuillez réessayer."
+      } else {
+        errorMessage.value = "Une erreur est survenue. Veuillez réessayer plus tard."
+      }
+    } else {
+      errorMessage.value = "Erreur inattendue. Contactez le support."
+    }
   }
 }
 </script>
