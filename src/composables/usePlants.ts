@@ -10,14 +10,14 @@ export function usePlants() {
 
   const fetchPlants = async () => {
     try {
-      const token = localStorage.getItem("jwt")
+      const token = localStorage.getItem('jwt')
       if (!token) {
-        await router.push("/login")
+        await router.push('/login')
         return
       }
 
       const response = await api.get('plants/', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       })
 
       if (Array.isArray(response.data.results)) {
@@ -27,13 +27,17 @@ export function usePlants() {
           plant_type: plant.plant_type,
           description: plant.description || 'Pas de description disponible.',
           image: plant.image || '/default-plant.jpg',
-          lastWatered: plant.last_watering || 'Date inconnue'
+          lastWatered: plant.last_watering || 'Date inconnue',
         }))
       } else {
         error.value = 'Aucune plante.'
       }
-    } catch (err) {
-      error.value = err.message
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        error.value = err.message
+      } else {
+        error.value = "Une erreur inconnue s'est produite."
+      }
     } finally {
       loading.value = false
     }

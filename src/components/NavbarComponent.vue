@@ -17,11 +17,7 @@
         >
           Connexion
         </router-link>
-        <button
-          v-else
-          @click="logout"
-          class="px-4 py-2 bg-red-600 text-white rounded"
-        >
+        <button v-else @click="logout" class="px-4 py-2 bg-red-600 text-white rounded">
           Déconnexion
         </button>
       </div>
@@ -30,9 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/authStore"
-import { useRouter } from "vue-router"
-import { storeToRefs } from "pinia"
+import { useAuthStore } from '@/stores/authStore'
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -40,6 +36,6 @@ const { isAuthenticated } = storeToRefs(authStore)
 
 const logout = () => {
   authStore.logout()
-  router.push("/login")
+  router.push('/login')
 }
 </script>
