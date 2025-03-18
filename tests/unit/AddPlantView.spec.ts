@@ -24,11 +24,12 @@ describe('AddPlantView', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    useRouter.mockReturnValue({ push: vi.fn() })
+    push = vi.fn() // 🛠 Déclaration ici pour éviter le `undefined`
+    useRouter.mockReturnValue({ push })
   })
 
   test('Redirige vers /login si non authentifié', async () => {
-    mount(AddPlantView, { global: { plugins: [createTestingPinia({ createSpy: vi.fn })] } })
+    mount(AddPlantView, { global: { plugins: [createTestingPinia({ createSpy: vi.fn() })] } })
 
     expect(push).toHaveBeenCalledWith('/login')
   })
@@ -36,7 +37,7 @@ describe('AddPlantView', () => {
   test('Affiche message après ajout de plante', async () => {
     api.default.post.mockResolvedValue({ status: 201 })
 
-    const wrapper = mount(AddPlantView, { global: { plugins: [createTestingPinia({ createSpy: vi.fn })] } })
+    const wrapper = mount(AddPlantView, { global: { plugins: [createTestingPinia({ createSpy: vi.fn() })] } })
 
     await wrapper.find('form').trigger('submit.prevent')
     expect(wrapper.text()).toContain('Plante ajoutée avec succès !')
