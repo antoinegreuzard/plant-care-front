@@ -1,20 +1,23 @@
-# Utiliser une image officielle de Node.js
+# Utiliser l'image officielle Node.js
 FROM node:20
 
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier le package.json et installer les dépendances
+# Copier les fichiers package.json et package-lock.json en premier (optimisation du cache Docker)
 COPY package.json package-lock.json ./
-RUN rm -rf node_modules package-lock.json
+
+# Nettoyer le cache npm pour éviter les erreurs Rollup
 RUN npm cache clean --force
+
+# Installer les dépendances proprement avec `npm ci`
 RUN npm install
 
-# Copier le reste du projet
+# Copier le reste du projet après l'installation des dépendances
 COPY . .
 
 # Exposer le port de Vite
 EXPOSE 5173
 
-# Lancer le serveur de développement
-CMD ["npm", "run", "dev"]
+# Lancer le serveur de développement en mode accessible
+CMD ["npm", "run", "dev", "--", "--host"]
