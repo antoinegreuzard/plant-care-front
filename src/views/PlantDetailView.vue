@@ -11,10 +11,8 @@
       <div class="mt-4">
         <h2 class="text-xl font-semibold">Détails d'entretien</h2>
         <ul class="list-disc ml-4 text-gray-700">
-          <li><strong>Type:</strong> {{ plant.plant_type }}</li>
-          <li><strong>Emplacement:</strong> {{ plant.location || "Non spécifié" }}</li>
-          <li><strong>Arrosage:</strong> Tous les {{ plant.watering_frequency }} jours</li>
-          <li><strong>Prochain arrosage:</strong> {{ plant.next_watering || "Non défini" }}</li>
+          <li><strong>Type:</strong> {{ plant.plant_type || "Inconnu" }}</li>
+          <li><strong>Dernier arrosage:</strong> {{ plant.lastWatered || "Non défini" }}</li>
         </ul>
       </div>
     </div>
@@ -23,11 +21,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
 import api from "@/services/api";
+import type { Plant } from "@/types";
 
-const route = useRoute();
-const plant = ref(null);
+const plant = ref<Plant | null>(null);
 const loading = ref(true);
 const error = ref("");
 
@@ -36,6 +33,7 @@ onMounted(async() => {
     const response = await api.get(`plants/$ {route.params.id}/`);
     plant.value = response.data;
   } catch (err) {
+    console.error("Erreur lors de la récupération de la plante:", err);
     error.value = "Erreur lors du chargement des données.";
   } finally {
     loading.value = false;
