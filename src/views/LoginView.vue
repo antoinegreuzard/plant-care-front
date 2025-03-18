@@ -20,26 +20,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import api from "@/services/api";
+import { ref } from "vue"
+import { useRouter } from "vue-router"
+import { useAuthStore } from "@/stores/authStore"
+import api from "@/services/api"
 
-const router = useRouter();
-const form = ref({
-  username: "",
-  password: "",
-});
-const errorMessage = ref("");
+const router = useRouter()
+const authStore = useAuthStore()
+const form = ref({ username: "", password: "" })
+const errorMessage = ref("")
 
 const submitLogin = async() => {
   try {
-    const response = await api.post("token/", form.value);
+    const response = await api.post("token/", form.value)
     if (response.status === 200) {
-      localStorage.setItem("jwt", response.data.access);
-      router.push("/");
+      authStore.login(response.data.access)
+      router.push("/")
     }
   } catch (error) {
-    errorMessage.value = "Identifiants incorrects, veuillez réessayer.";
+    errorMessage.value = "Identifiants incorrects, veuillez réessayer."
   }
-};
+}
 </script>
