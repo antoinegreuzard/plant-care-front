@@ -4,6 +4,10 @@ import { createTestingPinia } from '@pinia/testing'
 import { useAuthStore } from '../../src/stores/authStore'
 import { describe, test, expect, vi } from 'vitest'
 
+vi.mock('vue-router', () => ({
+  RouterLink: { template: '<div><slot/></div>' }
+}))
+
 describe('NavbarComponent', () => {
   test('Affiche \'Connexion\' si l\'utilisateur n\'est pas connecté', () => {
     const wrapper = mount(NavbarComponent, {

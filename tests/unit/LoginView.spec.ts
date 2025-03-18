@@ -5,7 +5,9 @@ import { createTestingPinia } from '@pinia/testing'
 import api from '../../src/services/api'
 
 vi.mock('../../src/services/api', () => ({
-  post: vi.fn()
+  default: {
+    post: vi.fn()
+  }
 }))
 
 describe('LoginView', () => {

@@ -1,10 +1,12 @@
 import { describe, test, expect, vi } from 'vitest'
-import { ref, nextTick } from 'vue'
+import { nextTick } from 'vue'
 import { usePlants } from '../../src/composables/usePlants'
 import api from '../../src/services/api'
 
 vi.mock('../../src/services/api', () => ({
-  get: vi.fn()
+  default: {
+    get: vi.fn()
+  }
 }))
 
 describe('usePlants', () => {

@@ -1,6 +1,10 @@
 import { mount } from '@vue/test-utils'
 import PlantCard from '../../src/components/PlantCard.vue'
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
+
+vi.mock('vue-router', () => ({
+  RouterLink: { template: '<div><slot/></div>' }
+}))
 
 describe('PlantCard', () => {
   test('Affiche le nom et la description de la plante', () => {
