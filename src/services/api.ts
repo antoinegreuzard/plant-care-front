@@ -7,7 +7,19 @@ const api = axios.create({
   }
 })
 
-// Intercepteur pour la gestion des erreurs globales
+// ✅ Ajout automatique du token JWT à chaque requête
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('jwt') // 🔹 Récupère le token JWT
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error)
+)
+
+// ✅ Gestion des erreurs globales
 api.interceptors.response.use(
   (response) => response,
   (error) => {

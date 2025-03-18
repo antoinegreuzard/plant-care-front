@@ -36,9 +36,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from 'vue'
+import { useRouter } from "vue-router"; // 🔹 Ajout du router pour redirection
 import api from "@/services/api";
 
+const router = useRouter();
 const form = ref({
   name: "",
   plant_type: "indoor",
@@ -47,6 +49,13 @@ const form = ref({
 });
 
 const message = ref("");
+
+onMounted(() => {
+  const token = localStorage.getItem("jwt");
+  if (!token) {
+    router.push("/login"); // 🔹 Redirection vers login si pas connecté
+  }
+});
 
 const submitForm = async() => {
   try {
@@ -57,11 +66,16 @@ const submitForm = async() => {
         name: "",
         plant_type: "indoor",
         description: "",
-        location: ""
+        location: "",
       };
     }
-  } catch (error) {
-    message.value = "Erreur lors de l'ajout.";
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      message.value = "Vous devez être connecté pour ajouter une plante.";
+      router.push("/login"); // 🔹 Redirige vers la page de connexion
+    } else {
+      message.value = "Erreur lors de l'ajout.";
+    }
   }
 };
 </script>
