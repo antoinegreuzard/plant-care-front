@@ -82,6 +82,9 @@ jobs:
       - name: 🛎️ Cloner le backend
         run: git clone ${{ secrets.BACKEND_REPO_URL }} backend
 
+      - name: 🛠️ Installer Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+
       - name: 🛠️ Démarrer le backend avec Docker Compose
         working-directory: backend
         run: docker-compose up -d
