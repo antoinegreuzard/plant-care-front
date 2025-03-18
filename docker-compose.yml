@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build: .
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+    environment:
+      - VITE_API_URL=http://backend:8000
+    networks:
+      - plantcare-network
+
+networks:
+  plantcare-network:
+    driver: bridge
