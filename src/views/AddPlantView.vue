@@ -36,46 +36,42 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRouter } from "vue-router"; // 🔹 Ajout du router pour redirection
-import api from "@/services/api";
+import { ref } from 'vue'
+import { useRouter } from "vue-router"
+import api from "@/services/api"
 
-const router = useRouter();
+const router = useRouter()
 const form = ref({
   name: "",
   plant_type: "indoor",
   description: "",
   location: "",
-});
+})
 
-const message = ref("");
-
-onMounted(() => {
-  const token = localStorage.getItem("jwt");
-  if (!token) {
-    router.push("/login");
-  }
-});
+const message = ref("")
 
 const submitForm = async() => {
   try {
-    const response = await api.post("plants/", form.value);
+    const token = localStorage.getItem("jwt")
+    const response = await api.post("plants/", form.value, {
+      headers: { Authorization: `Bearer $ {token}` }
+    })
     if (response.status === 201) {
-      message.value = "Plante ajoutée avec succès !";
+      message.value = "Plante ajoutée avec succès !"
       form.value = {
         name: "",
         plant_type: "indoor",
         description: "",
-        location: "",
-      };
+        location: ""
+      }
     }
   } catch (error: any) {
     if (error.response?.status === 401) {
-      message.value = "Vous devez être connecté pour ajouter une plante.";
-      router.push("/login"); // 🔹 Redirige vers la page de connexion
+      message.value = "Vous devez être connecté pour ajouter une plante."
+      router.push("/login")
     } else {
-      message.value = "Erreur lors de l'ajout.";
+      message.value = "Erreur lors de l'ajout."
     }
   }
-};
+}
 </script>
