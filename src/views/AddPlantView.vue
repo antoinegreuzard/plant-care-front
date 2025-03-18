@@ -53,7 +53,7 @@ const message = ref("");
 onMounted(() => {
   const token = localStorage.getItem("jwt");
   if (!token) {
-    router.push("/login"); // 🔹 Redirection vers login si pas connecté
+    router.push("/login");
   }
 });
 

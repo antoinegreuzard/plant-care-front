@@ -3,7 +3,7 @@
     <div class="container mx-auto flex justify-between">
       <router-link to="/" class="text-lg font-bold">🌱 Plant Care</router-link>
       <div>
-        <router-link v-if="!isAuthenticated" to="/login" class="px-4 py-2 bg-white text-green-600 rounded">
+        <router-link v-if="!authStore.isAuthenticated" to="/login" class="px-4 py-2 bg-white text-green-600 rounded">
           Connexion
         </router-link>
         <button v-else @click="logout" class="px-4 py-2 bg-red-600 text-white rounded">
@@ -14,22 +14,16 @@
   </nav>
 </template>
 
+
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const isAuthenticated = ref(false);
+const authStore = useAuthStore();
 
-// ✅ Vérifie si l'utilisateur est connecté
-onMounted(() => {
-  isAuthenticated.value = !!localStorage.getItem("jwt");
-});
-
-// ✅ Déconnexion : Supprime le token et redirige
 const logout = () => {
-  localStorage.removeItem("jwt");
-  isAuthenticated.value = false;
+  authStore.logout();
   router.push("/login");
 };
 </script>

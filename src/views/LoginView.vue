@@ -35,8 +35,8 @@ const submitLogin = async() => {
   try {
     const response = await api.post("token/", form.value);
     if (response.status === 200) {
-      localStorage.setItem("jwt", response.data.access); // ✅ Stocke le token
-      router.push("/"); // ✅ Redirige vers la page d'accueil après connexion
+      localStorage.setItem("jwt", response.data.access);
+      router.push("/");
     }
   } catch (error) {
     errorMessage.value = "Identifiants incorrects, veuillez réessayer.";
