@@ -49,7 +49,8 @@ jobs:
         run: |
           docker build -t plant-care-front .
           docker run --rm -d -p 5173:5173 --name plant-care-test plant-care-front
-          sleep 10 # Attendre que le conteneur démarre
+          echo "Attente de 5 secondes pour que Vite démarre..."
+          sleep 5  # ⏳ Attendre avant de tester la connexion
           curl --fail http://localhost:5173 || (docker logs plant-care-test && exit 1)
           docker stop plant-care-test
 
