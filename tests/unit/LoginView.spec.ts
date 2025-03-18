@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import LoginView from '../../src/views/LoginView.vue'
 import { createTestingPinia } from '@pinia/testing'
 import api from '../../src/services/api'
-import { vi } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
 
 vi.mock('@/services/api')
 

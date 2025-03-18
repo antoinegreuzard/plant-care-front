@@ -3,7 +3,7 @@ import AddPlantView from '../../src/views/AddPlantView.vue'
 import { createTestingPinia } from '@pinia/testing'
 import { useRouter } from 'vue-router'
 import api from '../../src/services/api'
-import { vi } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
 
 vi.mock('@/services/api')
 

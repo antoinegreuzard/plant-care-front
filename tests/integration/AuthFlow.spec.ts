@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import AddPlantView from '../../src/views/AddPlantView.vue'
 import { createTestingPinia } from '@pinia/testing'
 import { useAuthStore } from '../../src/stores/authStore'
-import { vi } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
 
 vi.mock('vue-router', () => ({
   useRouter: vi.fn(() => ({ push: vi.fn() }))

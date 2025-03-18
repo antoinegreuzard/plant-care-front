@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import NavbarComponent from '../../src/components/NavbarComponent.vue'
 import { createTestingPinia } from '@pinia/testing'
 import { useAuthStore } from '../../src/stores/authStore'
+import { describe, test, expect } from 'vitest'
 
 describe('NavbarComponent', () => {
   test('Affiche \'Connexion\' si l\'utilisateur n\'est pas connecté', () => {

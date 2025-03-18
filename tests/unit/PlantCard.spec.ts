@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import PlantCard from '../../src/components/PlantCard.vue'
+import { describe, test, expect } from 'vitest'
 
 describe('PlantCard', () => {
   test('Affiche le nom et la description de la plante', () => {

@@ -1,5 +1,5 @@
 import { usePlants } from '../../src/composables/usePlants'
-import { vi } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
 import api from '../../src/services/api'
 
 vi.mock('@/services/api')
