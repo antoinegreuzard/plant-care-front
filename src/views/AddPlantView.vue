@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import api from "@/services/api";
 
 const form = ref({
   name: "",
@@ -48,21 +49,18 @@ const form = ref({
 const message = ref("");
 
 const submitForm = async() => {
-  const response = await fetch("http://127.0.0.1:8000/api/plants/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(form.value),
-  });
-
-  if (response.ok) {
-    message.value = "Plante ajoutée avec succès !";
-    form.value = {
-      name: "",
-      plant_type: "indoor",
-      description: "",
-      location: ""
-    };
-  } else {
+  try {
+    const response = await api.post("plants/", form.value);
+    if (response.status === 201) {
+      message.value = "Plante ajoutée avec succès !";
+      form.value = {
+        name: "",
+        plant_type: "indoor",
+        description: "",
+        location: ""
+      };
+    }
+  } catch (error) {
     message.value = "Erreur lors de l'ajout.";
   }
 };

@@ -6,21 +6,9 @@ import AddPlantView from '../views/AddPlantView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/plant/:id',
-      name: 'plant-detail',
-      component: PlantDetailView
-    },
-    {
-      path: '/add-plant',
-      name: 'add-plant',
-      component: AddPlantView
-    }
+    { path: '/', name: 'home', component: HomeView },
+    { path: '/plant/:id', name: 'plant-detail', component: PlantDetailView },
+    { path: '/add-plant', name: 'add-plant', component: AddPlantView }
   ]
 })
 

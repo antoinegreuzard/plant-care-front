@@ -2,6 +2,7 @@
   <div class="container mx-auto p-4">
     <div v-if="loading" class="text-center text-gray-500">Chargement...</div>
     <div v-else-if="error" class="text-center text-red-500">{{ error }}</div>
+
     <div v-else-if="plant" class="bg-white shadow-lg rounded-lg p-6">
       <img :src="plant.image || '/default-plant.jpg'" alt="Plante" class="w-full h-60 object-cover rounded">
       <h1 class="text-2xl font-bold mt-4">{{ plant.name }}</h1>
