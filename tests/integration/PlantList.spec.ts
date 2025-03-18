@@ -1,20 +1,24 @@
 import { mount } from '@vue/test-utils'
 import HomeView from '../../src/views/HomeView.vue'
 import { createTestingPinia } from '@pinia/testing'
-import { usePlants } from '../../src/composables/usePlants'
-import { describe, test, expect, vi } from 'vitest'
+import { describe, test, expect, vi, beforeEach } from 'vitest'
+import { ref } from 'vue'
 
-vi.mock('@/composables/usePlants')
+vi.mock('../../src/composables/usePlants', () => ({
+  usePlants: vi.fn(() => ({
+    plants: ref([{ id: 1, name: 'Aloe Vera', plant_type: 'succulent' }]),
+    loading: ref(false),
+    error: ref('')
+  }))
+}))
 
 describe('HomeView', () => {
-  test('Affiche les plantes chargées', async () => {
-    usePlants.mockReturnValue({
-      plants: [{ id: 1, name: 'Aloe Vera', plant_type: 'succulent' }],
-      loading: false,
-      error: ''
-    })
+  beforeEach(() => {
+    createTestingPinia({ createSpy: vi.fn })
+  })
 
-    const wrapper = mount(HomeView, { global: { plugins: [createTestingPinia()] } })
+  test('Affiche les plantes chargées', async () => {
+    const wrapper = mount(HomeView, { global: { plugins: [createTestingPinia({ createSpy: vi.fn })] } })
     expect(wrapper.text()).toContain('Aloe Vera')
   })
 })

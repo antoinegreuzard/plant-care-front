@@ -2,22 +2,25 @@ import { mount } from '@vue/test-utils'
 import NavbarComponent from '../../src/components/NavbarComponent.vue'
 import { createTestingPinia } from '@pinia/testing'
 import { useAuthStore } from '../../src/stores/authStore'
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, vi } from 'vitest'
 
 describe('NavbarComponent', () => {
   test('Affiche \'Connexion\' si l\'utilisateur n\'est pas connecté', () => {
     const wrapper = mount(NavbarComponent, {
-      global: { plugins: [createTestingPinia()] }
+      global: {
+        plugins: [createTestingPinia({ createSpy: vi.fn })]
+      }
     })
     expect(wrapper.text()).toContain('Connexion')
   })
 
   test('Affiche \'Déconnexion\' si l\'utilisateur est connecté', async () => {
-    const authStore = useAuthStore()
+    const pinia = createTestingPinia({ createSpy: vi.fn })
+    const authStore = useAuthStore(pinia)
     authStore.isAuthenticated = true
 
     const wrapper = mount(NavbarComponent, {
-      global: { plugins: [createTestingPinia()] }
+      global: { plugins: [pinia] }
     })
 
     expect(wrapper.text()).toContain('Déconnexion')

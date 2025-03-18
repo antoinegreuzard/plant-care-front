@@ -1,15 +1,21 @@
-import { usePlants } from '../../src/composables/usePlants'
 import { describe, test, expect, vi } from 'vitest'
+import { ref, nextTick } from 'vue'
+import { usePlants } from '../../src/composables/usePlants'
 import api from '../../src/services/api'
 
-vi.mock('@/services/api')
+vi.mock('../../src/services/api', () => ({
+  get: vi.fn()
+}))
 
 describe('usePlants', () => {
   test('Récupère les plantes depuis l\'API', async () => {
-    const plants = [{ id: 1, name: 'Aloe Vera', plant_type: 'succulent' }]
-    api.get.mockResolvedValue({ data: plants })
+    const plantsData = [{ id: 1, name: 'Aloe Vera', plant_type: 'succulent' }]
+    api.get.mockResolvedValue({ data: plantsData })
 
-    const { plants: fetchedPlants } = usePlants()
-    expect(fetchedPlants.value).toEqual(plants)
+    const { plants, fetchPlants } = usePlants()
+    await fetchPlants()
+    await nextTick()
+
+    expect(plants.value).toEqual(plantsData)
   })
 })
