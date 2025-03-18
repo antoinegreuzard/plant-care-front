@@ -1,4 +1,4 @@
-# Utiliser l'image officielle de Node.js
+# Utiliser une image officielle de Node.js
 FROM node:20
 
 # Définir le répertoire de travail
@@ -7,11 +7,12 @@ WORKDIR /app
 # Copier package.json et package-lock.json
 COPY package.json package-lock.json ./
 
-# Nettoyer le cache npm pour éviter les erreurs Rollup
-RUN npm cache clean --force
+# Supprimer les modules et nettoyer le cache NPM pour éviter les erreurs Rollup
+RUN rm -rf node_modules package-lock.json && \
+    npm cache clean --force
 
-# Installer proprement les dépendances avec `npm ci`
-RUN npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+# Réinstaller proprement les dépendances avec une installation propre
+RUN npm install --force --legacy-peer-deps
 
 # Copier le reste du projet
 COPY . .
