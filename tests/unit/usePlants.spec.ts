@@ -4,18 +4,29 @@ import { usePlants } from '../../src/composables/usePlants'
 
 vi.mock('../../src/services/api', () => ({
   default: {
-    get: vi.fn()
+    get: vi.fn(() => Promise.resolve({
+      data: [{
+        id: 1,
+        name: 'Aloe Vera',
+        plant_type: 'succulent'
+      }]
+    }))
   }
 }))
 
-vi.mock('../../src/composables/usePlants', () => ({
-  usePlants: vi.fn(() => ({
-    plants: ref([]),
-    fetchPlants: vi.fn(),
-    loading: ref(false),
-    error: ref('')
-  }))
-}))
+vi.mock('../../src/composables/usePlants', () => {
+  const plants = ref([])
+  return {
+    usePlants: vi.fn(() => ({
+      plants,
+      fetchPlants: vi.fn(async () => {
+        plants.value = [{ id: 1, name: 'Aloe Vera', plant_type: 'succulent' }]
+      }),
+      loading: ref(false),
+      error: ref('')
+    }))
+  }
+})
 
 describe('usePlants', () => {
   test('Récupère les plantes depuis l\'API', async () => {
