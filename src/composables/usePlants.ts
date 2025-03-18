@@ -1,6 +1,7 @@
 import { ref, onMounted } from 'vue'
 import api from '@/services/api'
 import type { Plant } from '@/types'
+import router from '@/router'
 
 export function usePlants() {
   const plants = ref<Plant[]>([]) // ✅ Typage correct
@@ -9,7 +10,15 @@ export function usePlants() {
 
   const fetchPlants = async () => {
     try {
-      const response = await api.get('plants/')
+      const token = localStorage.getItem("jwt")
+      if (!token) {
+        await router.push("/login")
+        return
+      }
+
+      const response = await api.get('plants/', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
 
       if (Array.isArray(response.data)) {
         plants.value = response.data.map(plant => ({
@@ -24,8 +33,8 @@ export function usePlants() {
         error.value = 'Aucune plante.'
       }
     } catch (err) {
-      console.error('Erreur lors de la récupération des plantes:', err)
-      error.value = 'Impossible de récupérer les plantes.'
+      error.value = "Vous devez être connecté pour voir les plantes."
+      await router.push("/login")
     } finally {
       loading.value = false
     }
