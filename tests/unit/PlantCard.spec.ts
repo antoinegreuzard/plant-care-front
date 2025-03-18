@@ -3,7 +3,8 @@ import PlantCard from '../../src/components/PlantCard.vue'
 import { describe, test, expect, vi } from 'vitest'
 
 vi.mock('vue-router', () => ({
-  RouterLink: { template: '<div><slot/></div>' }
+  useRouter: vi.fn(() => ({ push: vi.fn() })),
+  RouterLink: { template: '<a><slot/></a>' }
 }))
 
 describe('PlantCard', () => {

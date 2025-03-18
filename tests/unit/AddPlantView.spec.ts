@@ -7,12 +7,15 @@ import { describe, test, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('../../src/services/api', () => ({
   default: {
+    get: vi.fn(),
     post: vi.fn()
   }
 }))
 
 vi.mock('vue-router', () => ({
-  useRouter: vi.fn(() => ({ push: vi.fn() })),
+  useRouter: vi.fn(() => ({
+    push: vi.fn()
+  })),
   RouterLink: { template: '<div><slot/></div>' }
 }))
 
@@ -21,8 +24,7 @@ describe('AddPlantView', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    push = vi.fn()
-    useRouter.mockReturnValue({ push })
+    useRouter.mockReturnValue({ push: vi.fn() })
   })
 
   test('Redirige vers /login si non authentifié', async () => {

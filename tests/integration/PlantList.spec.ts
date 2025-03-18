@@ -12,6 +12,11 @@ vi.mock('../../src/composables/usePlants', () => ({
   }))
 }))
 
+vi.mock('vue-router', () => ({
+  useRouter: vi.fn(() => ({ push: vi.fn() })),
+  RouterLink: { template: '<a><slot/></a>' }
+}))
+
 describe('HomeView', () => {
   beforeEach(() => {
     createTestingPinia({ createSpy: vi.fn })

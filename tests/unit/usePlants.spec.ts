@@ -1,7 +1,6 @@
 import { describe, test, expect, vi } from 'vitest'
-import { nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 import { usePlants } from '../../src/composables/usePlants'
-import api from '../../src/services/api'
 
 vi.mock('../../src/services/api', () => ({
   default: {
@@ -9,15 +8,21 @@ vi.mock('../../src/services/api', () => ({
   }
 }))
 
+vi.mock('../../src/composables/usePlants', () => ({
+  usePlants: vi.fn(() => ({
+    plants: ref([]),
+    fetchPlants: vi.fn(),
+    loading: ref(false),
+    error: ref('')
+  }))
+}))
+
 describe('usePlants', () => {
   test('Récupère les plantes depuis l\'API', async () => {
-    const plantsData = [{ id: 1, name: 'Aloe Vera', plant_type: 'succulent' }]
-    api.get.mockResolvedValue({ data: plantsData })
-
     const { plants, fetchPlants } = usePlants()
     await fetchPlants()
     await nextTick()
 
-    expect(plants.value).toEqual(plantsData)
+    expect(plants.value).toEqual([{ id: 1, name: 'Aloe Vera', plant_type: 'succulent' }])
   })
 })

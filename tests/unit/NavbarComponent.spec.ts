@@ -5,6 +5,9 @@ import { useAuthStore } from '../../src/stores/authStore'
 import { describe, test, expect, vi } from 'vitest'
 
 vi.mock('vue-router', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn()
+  })),
   RouterLink: { template: '<div><slot/></div>' }
 }))
 
