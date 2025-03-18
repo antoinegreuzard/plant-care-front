@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import PlantCard from '@/components/PlantCard.vue'
+import PlantCard from '../../src/components/PlantCard.vue'
 
 describe('PlantCard', () => {
   test('Affiche le nom et la description de la plante', () => {

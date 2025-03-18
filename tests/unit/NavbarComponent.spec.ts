@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
-import NavbarComponent from '@/components/NavbarComponent.vue'
+import NavbarComponent from '../../src/components/NavbarComponent.vue'
 import { createTestingPinia } from '@pinia/testing'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '../../src/stores/authStore'
 
 describe('NavbarComponent', () => {
   test('Affiche \'Connexion\' si l\'utilisateur n\'est pas connecté', () => {

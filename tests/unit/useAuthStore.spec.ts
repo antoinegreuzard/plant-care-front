@@ -1,5 +1,5 @@
 import { setActivePinia, createPinia } from 'pinia'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '../../src/stores/authStore'
 
 describe('useAuthStore', () => {
   beforeEach(() => {

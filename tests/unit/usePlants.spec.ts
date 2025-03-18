@@ -1,7 +1,6 @@
-import { usePlants } from '@/composables/usePlants'
-import { ref } from 'vue'
+import { usePlants } from '../../src/composables/usePlants'
 import { vi } from 'vitest'
-import api from '@/services/api'
+import api from '../../src/services/api'
 
 vi.mock('@/services/api')
 

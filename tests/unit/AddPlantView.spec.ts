@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils'
-import AddPlantView from '@/views/AddPlantView.vue'
+import AddPlantView from '../../src/views/AddPlantView.vue'
 import { createTestingPinia } from '@pinia/testing'
 import { useRouter } from 'vue-router'
-import api from '@/services/api'
+import api from '../../src/services/api'
 import { vi } from 'vitest'
 
 vi.mock('@/services/api')

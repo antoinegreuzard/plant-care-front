@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
-import HomeView from '@/views/HomeView.vue'
+import HomeView from '../../src/views/HomeView.vue'
 import { createTestingPinia } from '@pinia/testing'
-import { usePlants } from '@/composables/usePlants'
+import { usePlants } from '../../src/composables/usePlants'
 import { vi } from 'vitest'
 
 vi.mock('@/composables/usePlants')
