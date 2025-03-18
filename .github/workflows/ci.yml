@@ -28,7 +28,7 @@ jobs:
           npm cache clean --force
 
       - name: 📦 Installer les dépendances
-        run: npm ci
+        run: npm install
 
       - name: 🔍 Vérification du code avec ESLint
         run: npm run lint
@@ -73,7 +73,7 @@ jobs:
           npm cache clean --force
 
       - name: 📦 Installer les dépendances
-        run: npm ci
+        run: npm install
 
       - name: 🏗️ Lancer le build pour les tests E2E
         run: npm run build
