@@ -12,9 +12,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 
-defineProps<{
-  plant: {
-    id: number; name: string; description: string; image?: string
-  }
-}>();
+import type { Plant } from "@/types";
+
+defineProps<{ plant: Plant }>();
 </script>

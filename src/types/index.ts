@@ -1,6 +1,8 @@
 export interface Plant {
   id: number;
   name: string;
-  type: string;
+  plant_type: string;
+  description: string;
+  image?: string;
   lastWatered: string;
 }
