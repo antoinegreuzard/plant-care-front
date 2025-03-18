@@ -14,9 +14,9 @@ const router = createRouter({
       path: '/add-plant',
       name: 'add-plant',
       component: AddPlantView,
-      meta: { requiresAuth: true }
-    }
-  ]
+      meta: { requiresAuth: true },
+    },
+  ],
 })
 
 router.beforeEach((to, from, next) => {

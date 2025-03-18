@@ -1,19 +1,19 @@
 <template>
   <div class="flex flex-col min-h-screen">
     <!-- Navbar -->
-    <Navbar/>
+    <Navbar />
 
     <!-- Contenu principal -->
     <main class="flex-1 container mx-auto p-4">
-      <router-view/>
+      <router-view />
     </main>
 
     <!-- Footer -->
-    <Footer/>
+    <Footer />
   </div>
 </template>
 
 <script setup lang="ts">
-import Navbar from "@/components/NavbarComponent.vue";
-import Footer from "@/components/FooterComponent.vue";
+import Navbar from '@/components/NavbarComponent.vue'
+import Footer from '@/components/FooterComponent.vue'
 </script>
