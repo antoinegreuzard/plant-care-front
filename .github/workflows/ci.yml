@@ -59,7 +59,7 @@ jobs:
     needs: build-and-test  # Ne lance les tests E2E que si le build réussit
 
     steps:
-      - name: 🛎️ Checkout le code
+      - name: 🛎️ Checkout le code du frontend
         uses: actions/checkout@v4
 
       - name: 🏗️ Installer Node.js
@@ -96,6 +96,12 @@ jobs:
             echo "Backend non prêt, attente..."
             sleep 5
           done
+
+      - name: ⚙️ Appliquer les migrations et créer le superuser
+        working-directory: backend
+        run: |
+          docker-compose exec -T backend python manage.py migrate
+          docker-compose exec -T backend python manage.py createsuperuser --noinput || true
 
       - name: 🚀 Démarrer le serveur de prévisualisation
         run: npm run preview &
