@@ -4,12 +4,12 @@
     <form @submit.prevent="submitLogin" class="bg-white p-6 rounded shadow">
       <div class="mb-4">
         <label class="block font-semibold">Nom d'utilisateur</label>
-        <input v-model="form.username" type="text" required class="w-full p-2 border rounded"/>
+        <input v-model="form.username" name="username" type="text" required class="w-full p-2 border rounded"/>
       </div>
 
       <div class="mb-4">
         <label class="block font-semibold">Mot de passe</label>
-        <input v-model="form.password" type="password" required class="w-full p-2 border rounded"/>
+        <input v-model="form.password" name="password" type="password" required class="w-full p-2 border rounded"/>
       </div>
 
       <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Connexion</button>

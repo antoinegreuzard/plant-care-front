@@ -3,7 +3,7 @@ describe('Ajout de plante', () => {
     cy.login('testuser', 'testpassword')
     cy.visit('/add-plant')
 
-    cy.get('h1').should('contain', 'Ajouter une plante') // Vérifie que la page a bien chargé
+    cy.get('h1').should('contain', 'Ajouter une nouvelle plante') // Vérifie que la page a bien chargé
     cy.get('input[name=name]').should('be.visible').type('Monstera')
     cy.get('button').contains('Ajouter').should('be.visible').click()
 
