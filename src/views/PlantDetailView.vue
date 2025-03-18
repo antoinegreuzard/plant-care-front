@@ -20,23 +20,57 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watchEffect } from "vue";
+import { useRoute } from "vue-router";
 import api from "@/services/api";
 import type { Plant } from "@/types";
+import router from "@/router";
 
 const plant = ref<Plant | null>(null);
 const loading = ref(true);
 const error = ref("");
+const route = useRoute();
 
-onMounted(async() => {
+const fetchPlant = async () => {
+  loading.value = true;
+  error.value = "";
+  plant.value = null;
+
   try {
-    const response = await api.get(`plants/$ {route.params.id}/`);
-    plant.value = response.data;
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      await router.push("/login");
+      return;
+    }
+
+    const response = await api.get(`plants/${route.params.id}/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // Transformation des données pour correspondre à l'interface Plant
+    plant.value = {
+      id: response.data.id,
+      name: response.data.name,
+      plant_type: response.data.plant_type,
+      description: response.data.description || "Aucune description disponible.",
+      image: response.data.image || "/default-plant.jpg",
+      lastWatered: response.data.last_watering || "Non défini",
+    };
+
   } catch (err) {
     console.error("Erreur lors de la récupération de la plante:", err);
     error.value = "Erreur lors du chargement des données.";
   } finally {
     loading.value = false;
   }
+};
+
+// Recharger la plante si l'ID change (ex: navigation entre plantes)
+watchEffect(() => {
+  if (route.params.id) {
+    fetchPlant();
+  }
 });
+
+onMounted(fetchPlant);
 </script>

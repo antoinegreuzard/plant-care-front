@@ -20,21 +20,20 @@ export function usePlants() {
         headers: { Authorization: `Bearer ${token}` }
       })
 
-      if (Array.isArray(response.data)) {
-        plants.value = response.data.map(plant => ({
+      if (Array.isArray(response.data.results)) {
+        plants.value = response.data.results.map((plant: Plant) => ({
           id: plant.id,
           name: plant.name,
           plant_type: plant.plant_type,
           description: plant.description || 'Pas de description disponible.',
           image: plant.image || '/default-plant.jpg',
-          lastWatered: plant.lastWatered || 'Date inconnue'
+          lastWatered: plant.last_watering || 'Date inconnue'
         }))
       } else {
         error.value = 'Aucune plante.'
       }
     } catch (err) {
-      error.value = "Vous devez être connecté pour voir les plantes."
-      await router.push("/login")
+      error.value = err.message
     } finally {
       loading.value = false
     }
