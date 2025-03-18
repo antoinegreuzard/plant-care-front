@@ -23,8 +23,8 @@ export function usePlants() {
       } else {
         error.value = 'Aucune plante.'
       }
-
     } catch (err) {
+      console.error('Erreur lors de la récupération des plantes:', err)
       error.value = 'Impossible de récupérer les plantes.'
     } finally {
       loading.value = false
