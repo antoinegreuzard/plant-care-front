@@ -15,8 +15,8 @@
       <div class="mt-4">
         <h2 class="text-xl font-semibold">Détails d'entretien</h2>
         <ul class="list-disc ml-4 text-gray-700">
-          <li><strong>Type:</strong> {{ plant.plant_type || 'Inconnu' }}</li>
-          <li><strong>Dernier arrosage:</strong> {{ plant.lastWatered || 'Non défini' }}</li>
+          <li><strong>Type :</strong> {{ plant.plant_type || 'Inconnu' }}</li>
+          <li><strong>Dernier arrosage :</strong> {{ plant.lastWatered || 'Non défini' }}</li>
         </ul>
       </div>
     </div>
