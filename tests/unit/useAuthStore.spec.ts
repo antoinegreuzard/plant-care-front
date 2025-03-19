@@ -9,13 +9,13 @@ describe('useAuthStore', () => {
 
   test('Login met à jour l\'état de connexion', () => {
     const store = useAuthStore()
-    store.login('fake_token')
+    store.setToken('fake_token')
     expect(store.isAuthenticated).toBe(true)
   })
 
   test('Logout supprime le token', () => {
     const store = useAuthStore()
-    store.logout()
+    store.clearToken()
     expect(store.isAuthenticated).toBe(false)
   })
 })
