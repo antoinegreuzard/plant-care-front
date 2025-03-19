@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export const useAuthStore = defineStore('authStore', () => {
-  const token = ref(localStorage.getItem('jwt') || '')
+  const token = ref(localStorage.getItem('jwt') || '' || null)
 
   const isAuthenticated = computed(() => !!token.value)
 
