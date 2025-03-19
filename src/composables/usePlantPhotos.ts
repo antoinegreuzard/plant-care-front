@@ -23,7 +23,8 @@ export function usePlantPhotos(plantId: number | string) {
 
   const uploadPhoto = async (file: File) => {
     const formData = new FormData()
-    formData.append('photo', file)
+    formData.append('image', file) // ← clé attendue par Django
+    formData.append('plant', plantId.toString()) // ← ID de la plante requis
 
     loading.value = true
     error.value = ''
@@ -32,9 +33,9 @@ export function usePlantPhotos(plantId: number | string) {
       await api.post(`plants/${plantId}/upload-photo/`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      await fetchPhotos() // recharge les photos après l'upload
+      await fetchPhotos()
     } catch {
-      error.value = 'Erreur lors de l’ajout de la photo.'
+      error.value = "Erreur lors de l'ajout de la photo."
     } finally {
       loading.value = false
     }
