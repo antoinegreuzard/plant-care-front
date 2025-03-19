@@ -23,7 +23,7 @@ describe('AuthFlow', () => {
   test('Redirige vers /add-plant après connexion', async () => {
     const pinia = createTestingPinia({ createSpy: vi.fn })
     const authStore = useAuthStore(pinia)
-    authStore.login('token')
+    authStore.setToken('token')
 
     const wrapper = mount(AddPlantView, { global: { plugins: [pinia] } })
     expect(wrapper.text()).toContain('Ajouter une nouvelle plante')
