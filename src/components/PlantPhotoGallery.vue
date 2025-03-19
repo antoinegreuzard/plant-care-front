@@ -24,7 +24,7 @@
       <img
         v-for="photo in photos"
         :key="photo.id"
-        :src="photo.image_url"
+        :src="photo.image"
         alt="Photo de la plante"
         class="rounded shadow object-cover h-40 w-full"
       />

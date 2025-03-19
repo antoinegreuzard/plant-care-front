@@ -10,6 +10,8 @@ export interface Plant {
 
 export interface Photo {
   id: number
-  image_url: string
+  image: string
+  caption?: string | null
   uploaded_at: string
+  plant: number
 }

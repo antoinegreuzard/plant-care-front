@@ -14,8 +14,9 @@ export function usePlantPhotos(plantId: number | string) {
     try {
       const { data } = await api.get<Photo[]>(`plants/${plantId}/photos/`)
       photos.value = data
-    } catch {
+    } catch (err) {
       error.value = 'Erreur lors du chargement des photos.'
+      console.error(err)
     } finally {
       loading.value = false
     }
@@ -23,8 +24,8 @@ export function usePlantPhotos(plantId: number | string) {
 
   const uploadPhoto = async (file: File) => {
     const formData = new FormData()
-    formData.append('image', file) // ← clé attendue par Django
-    formData.append('plant', plantId.toString()) // ← ID de la plante requis
+    formData.append('image', file)
+    formData.append('plant', String(plantId))
 
     loading.value = true
     error.value = ''
