@@ -36,30 +36,26 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import api from '@/services/api'
+import type { AxiosError } from 'axios'
 
 const router = useRouter()
 const authStore = useAuthStore()
+
 const form = ref({ username: '', password: '' })
 const errorMessage = ref('')
 
 const submitLogin = async () => {
+  errorMessage.value = ''
   try {
-    const response = await api.post('token/', form.value)
-    if (response.status === 200) {
-      authStore.setToken(response.data.access)
-      await router.push('/')
-    }
-  } catch (error: unknown) {
-    if (typeof error === 'object' && error !== null && 'response' in error) {
-      const err = error as { response?: { status: number } }
-      if (err.response?.status === 401) {
-        errorMessage.value = 'Identifiants incorrects, veuillez réessayer.'
-      } else {
-        errorMessage.value = 'Une erreur est survenue. Veuillez réessayer plus tard.'
-      }
-    } else {
-      errorMessage.value = 'Erreur inattendue. Contactez le support.'
-    }
+    const { data } = await api.post<{ access: string }>('token/', form.value)
+    authStore.setToken(data.access)
+    await router.push('/')
+  } catch (error) {
+    const err = error as AxiosError
+    errorMessage.value =
+      err.response?.status === 401
+        ? 'Identifiants incorrects.'
+        : 'Une erreur est survenue, veuillez réessayer.'
   }
 }
 </script>

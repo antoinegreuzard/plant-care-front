@@ -59,8 +59,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import type { AxiosError } from 'axios'
 
 const router = useRouter()
+
 const form = ref({
   name: '',
   plant_type: 'indoor',
@@ -71,42 +73,22 @@ const form = ref({
 const message = ref('')
 
 const submitForm = async () => {
+  message.value = ''
+
   try {
-    const token = localStorage.getItem('jwt')
-    if (!token) {
+    const { status } = await api.post('plants/', form.value)
+
+    if (status === 201) {
+      message.value = 'Plante ajoutée avec succès !'
+      form.value = { name: '', plant_type: 'indoor', description: '', location: '' }
+    }
+  } catch (error) {
+    const err = error as AxiosError
+    if (err.response?.status === 401) {
       message.value = 'Vous devez être connecté pour ajouter une plante.'
       await router.push('/login')
-      return
-    }
-
-    const response = await api.post('plants/', form.value, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-
-    if (response.status === 201) {
-      message.value = 'Plante ajoutée avec succès !'
-      form.value = {
-        name: '',
-        plant_type: 'indoor',
-        description: '',
-        location: '',
-      }
-    }
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error(error.message)
-    }
-
-    if (typeof error === 'object' && error !== null && 'response' in error) {
-      const err = error as { response?: { status: number } }
-      if (err.response?.status === 401) {
-        message.value = 'Vous devez être connecté pour ajouter une plante.'
-        await router.push('/login')
-      } else {
-        message.value = "Erreur lors de l'ajout."
-      }
     } else {
-      message.value = 'Une erreur inconnue est survenue.'
+      message.value = "Erreur lors de l'ajout de la plante."
     }
   }
 }

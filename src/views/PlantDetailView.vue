@@ -24,56 +24,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import api from '@/services/api'
 import type { Plant } from '@/types'
-import router from '@/router'
 
 const plant = ref<Plant | null>(null)
 const loading = ref(true)
 const error = ref('')
 const route = useRoute()
+const router = useRouter()
 
-const fetchPlant = async () => {
+const fetchPlant = async (id: string | string[]) => {
   loading.value = true
   error.value = ''
   plant.value = null
 
   try {
-    const token = localStorage.getItem('jwt')
-    if (!token) {
-      await router.push('/login')
-      return
-    }
-
-    const response = await api.get(`plants/${route.params.id}/`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-
-    // Transformation des données pour correspondre à l'interface Plant
+    const { data } = await api.get<Plant>(`plants/${id}/`)
     plant.value = {
-      id: response.data.id,
-      name: response.data.name,
-      plant_type: response.data.plant_type,
-      description: response.data.description || 'Aucune description disponible.',
-      image: response.data.image || '/default-plant.jpg',
-      lastWatered: response.data.last_watering || 'Non défini',
+      ...data,
+      description: data.description || 'Aucune description disponible.',
+      image: data.image || '/default-plant.jpg',
+      lastWatered: data.last_watering || 'Non défini',
     }
   } catch (err) {
-    console.error('Erreur lors de la récupération de la plante:', err)
+    console.error(err)
     error.value = 'Erreur lors du chargement des données.'
+    await router.push('/')
   } finally {
     loading.value = false
   }
 }
 
-// Recharger la plante si l'ID change (ex: navigation entre plantes)
-watchEffect(() => {
-  if (route.params.id) {
-    fetchPlant()
-  }
-})
-
-onMounted(fetchPlant)
+watch(
+  () => route.params.id,
+  (newId) => {
+    if (newId) fetchPlant(newId)
+  },
+  { immediate: true },
+)
 </script>
