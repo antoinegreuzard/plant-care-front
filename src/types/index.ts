@@ -7,3 +7,9 @@ export interface Plant {
   lastWatered?: string
   last_watering?: string
 }
+
+export interface Photo {
+  id: number
+  image_url: string
+  uploaded_at: string
+}
