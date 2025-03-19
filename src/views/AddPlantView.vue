@@ -52,6 +52,7 @@
     </form>
 
     <p v-if="message" class="mt-4 text-green-600">{{ message }}</p>
+    <p v-if="errorMessage" class="mt-4 text-red-600">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -59,8 +60,14 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import type { AxiosError } from 'axios'
+
+interface ErrorResponse {
+  detail?: string
+}
 
 const router = useRouter()
+
 const form = ref({
   name: '',
   plant_type: 'indoor',
@@ -69,45 +76,30 @@ const form = ref({
 })
 
 const message = ref('')
+const errorMessage = ref('')
 
 const submitForm = async () => {
+  message.value = ''
+  errorMessage.value = ''
+
   try {
-    const token = localStorage.getItem('jwt')
-    if (!token) {
-      message.value = 'Vous devez être connecté pour ajouter une plante.'
-      await router.push('/login')
-      return
-    }
+    const { status } = await api.post('plants/', form.value)
 
-    const response = await api.post('plants/', form.value, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-
-    if (response.status === 201) {
+    if (status === 201) {
       message.value = 'Plante ajoutée avec succès !'
-      form.value = {
-        name: '',
-        plant_type: 'indoor',
-        description: '',
-        location: '',
-      }
+      form.value = { name: '', plant_type: 'indoor', description: '', location: '' }
     }
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error(error.message)
+  } catch (error) {
+    const err = error as AxiosError<ErrorResponse>
+
+    if (err.response?.status === 401) {
+      errorMessage.value = 'Vous devez être connecté pour ajouter une plante.'
+      await router.push('/login')
+    } else {
+      errorMessage.value = err.response?.data?.detail || "Erreur lors de l'ajout de la plante."
     }
 
-    if (typeof error === 'object' && error !== null && 'response' in error) {
-      const err = error as { response?: { status: number } }
-      if (err.response?.status === 401) {
-        message.value = 'Vous devez être connecté pour ajouter une plante.'
-        await router.push('/login')
-      } else {
-        message.value = "Erreur lors de l'ajout."
-      }
-    } else {
-      message.value = 'Une erreur inconnue est survenue.'
-    }
+    console.error('Erreur API:', err.response || err.message)
   }
 }
 </script>

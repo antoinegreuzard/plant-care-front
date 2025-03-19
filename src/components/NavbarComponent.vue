@@ -35,7 +35,7 @@ const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)
 
 const logout = () => {
-  authStore.logout()
+  authStore.clearToken()
   router.push('/login')
 }
 </script>
