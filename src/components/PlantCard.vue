@@ -10,12 +10,14 @@
     <router-link :to="`/plant/${plant.id}`" class="text-green-600 mt-2 block">
       Voir détails
     </router-link>
+    <router-link :to="`/plant/${plant.id}/photos`" class="text-blue-600 mt-1 block">
+      Galerie Photos
+    </router-link>
   </div>
 </template>
 
 <script setup lang="ts">
 import { defineProps } from 'vue'
-
 import type { Plant } from '@/types'
 
 defineProps<{ plant: Plant }>()

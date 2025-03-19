@@ -47,8 +47,8 @@ const errorMessage = ref('')
 const submitLogin = async () => {
   errorMessage.value = ''
   try {
-    const { data } = await api.post<{ access: string }>('token/', form.value)
-    authStore.setToken(data.access)
+    const { data } = await api.post<{ access: string; refresh: string }>('token/', form.value)
+    authStore.setTokens(data.access, data.refresh)
     await router.push('/')
   } catch (error) {
     const err = error as AxiosError
