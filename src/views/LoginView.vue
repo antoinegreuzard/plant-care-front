@@ -46,7 +46,7 @@ const submitLogin = async () => {
   try {
     const response = await api.post('token/', form.value)
     if (response.status === 200) {
-      authStore.login(response.data.access)
+      authStore.setToken(response.data.access)
       await router.push('/')
     }
   } catch (error: unknown) {
