@@ -1,49 +1,37 @@
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import api from '@/services/api'
 import type { Plant } from '@/types'
-import router from '@/router'
 
 export function usePlants() {
-  const plants = ref<Plant[]>([]) // ✅ Typage correct
-  const loading = ref(true)
-  const error = ref('')
+  const plants = ref<Plant[]>([])
+  const loading = ref<boolean>(false)
+  const error = ref<string>('')
 
   const fetchPlants = async () => {
+    loading.value = true
+    error.value = ''
     try {
-      const token = localStorage.getItem('jwt')
-      if (!token) {
-        await router.push('/login')
-        return
-      }
+      const { data } = await api.get('plants')
 
-      const response = await api.get('plants/', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-
-      if (Array.isArray(response.data.results)) {
-        plants.value = response.data.results.map((plant: Plant) => ({
-          id: plant.id,
-          name: plant.name,
-          plant_type: plant.plant_type,
+      if (Array.isArray(data) && data.length) {
+        plants.value = data.map((plant) => ({
+          ...plant,
           description: plant.description || 'Pas de description disponible.',
           image: plant.image || '/default-plant.jpg',
           lastWatered: plant.last_watering || 'Date inconnue',
         }))
       } else {
-        error.value = 'Aucune plante.'
+        error.value = 'Aucune plante trouvée.'
+        plants.value = []
       }
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        error.value = err.message
-      } else {
-        error.value = "Une erreur inconnue s'est produite."
-      }
+    } catch (e) {
+      error.value = 'Erreur lors du chargement des plantes.'
     } finally {
       loading.value = false
     }
   }
 
-  onMounted(fetchPlants)
+  fetchPlants() // auto-call à l'initialisation
 
-  return { plants, loading, error }
+  return { plants, loading, error, fetchPlants }
 }
