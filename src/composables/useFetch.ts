@@ -1,25 +1,19 @@
 import { ref, watchEffect } from 'vue'
-import api from '@/services/api'
-import type { AxiosError } from 'axios'
 
 export function useFetch<T>(url: string) {
   const data = ref<T | null>(null)
   const error = ref<string | null>(null)
-  const loading = ref(false)
+  const loading = ref<boolean>(false)
 
   watchEffect(async () => {
     loading.value = true
     error.value = null
-
     try {
-      const res = await api.get<T>(url)
-      data.value = res.data
-    } catch (err) {
-      const axiosError = err as AxiosError<{ message?: string }>
-      error.value =
-        axiosError.response?.data?.message ||
-        axiosError.message ||
-        'Erreur inconnue lors de la requête.'
+      const res = await fetch(url)
+      if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`)
+      data.value = (await res.json()) as T
+    } catch (e) {
+      error.value = (e as Error).message
     } finally {
       loading.value = false
     }
