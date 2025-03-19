@@ -11,9 +11,9 @@ export function usePlants() {
     loading.value = true
     error.value = ''
     try {
-      const { data } = await api.get('plants')
+      const { data } = await api.get<Plant[]>('/plants')
 
-      if (Array.isArray(data) && data.length) {
+      if (data.length > 0) {
         plants.value = data.map((plant) => ({
           ...plant,
           description: plant.description || 'Pas de description disponible.',
@@ -24,14 +24,14 @@ export function usePlants() {
         error.value = 'Aucune plante trouvée.'
         plants.value = []
       }
-    } catch (e) {
+    } catch {
       error.value = 'Erreur lors du chargement des plantes.'
     } finally {
       loading.value = false
     }
   }
 
-  fetchPlants() // auto-call à l'initialisation
+  fetchPlants() // initialisation automatique
 
   return { plants, loading, error, fetchPlants }
 }

@@ -11,10 +11,11 @@ export const usePlantStore = defineStore('plantStore', () => {
   async function loadPlants() {
     loading.value = true
     error.value = ''
+
     try {
-      const { data } = await api.get('/plants')
+      const { data } = await api.get<Plant[]>('/plants')
       plants.value = data
-    } catch (e) {
+    } catch {
       error.value = 'Erreur lors du chargement des plantes.'
     } finally {
       loading.value = false
