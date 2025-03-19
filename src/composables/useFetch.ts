@@ -1,4 +1,5 @@
 import { ref, watchEffect } from 'vue'
+import api from '@/services/api'
 
 export function useFetch<T>(url: string) {
   const data = ref<T | null>(null)
@@ -7,13 +8,12 @@ export function useFetch<T>(url: string) {
 
   watchEffect(async () => {
     loading.value = true
-    error.value = null
+    error.value = ''
     try {
-      const res = await fetch(url)
-      if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`)
-      data.value = (await res.json()) as T
-    } catch (e) {
-      error.value = (e as Error).message
+      const res = await api.get<T>(url)
+      data.value = res.data
+    } catch (err: any) {
+      error.value = err.response?.data?.message || err.message
     } finally {
       loading.value = false
     }
