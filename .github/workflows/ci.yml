@@ -180,6 +180,7 @@ jobs:
           fi
 
       - name: 📋 Logs Laravel (si erreur)
+        working-directory: backend-laravel
         if: failure()
         run: docker-compose logs app
 
@@ -201,5 +202,6 @@ jobs:
         run: npm run test:e2e
 
       - name: 📋 Logs Laravel (si erreur)
+        working-directory: backend-laravel
         if: failure()
         run: docker-compose logs app
