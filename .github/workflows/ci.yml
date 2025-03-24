@@ -194,12 +194,15 @@ jobs:
         working-directory: backend-laravel
         run: |
           docker-compose exec -T app php artisan tinker --execute "\
-          \$user = \App\Models\User::firstOrCreate(
+          \App\Models\User::updateOrCreate(
             ['email' => 'test@example.com'],
-            ['name' => 'Test User', 'username' => 'testuser', 'password' => bcrypt('testpassword')]
+            [
+              'name' => 'Test User',
+              'username' => 'testuser',
+              'password' => 'testpassword'
+            ]
           ); \
-          echo '✅ Utilisateur Laravel prêt : ' . \$user->username;"
-
+          echo '✅ Utilisateur Laravel prêt';"
           
       - name: 🚀 Preview app
         run: npm run preview &
