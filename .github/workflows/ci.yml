@@ -144,14 +144,29 @@ jobs:
         working-directory: backend-laravel
         run: docker-compose up -d --build
 
-      - name: Wait for Laravel to be ready
+      - name: ⏳ Wait for Laravel container to be healthy
+        working-directory: backend-laravel
         run: |
-          echo "Waiting for Laravel to be ready..."
-          sleep 60  # Increase this value if needed
-          until curl --output /dev/null --silent --head --fail http://localhost:8000; do
-            echo "Laravel not ready yet..."
+          echo "⏳ Waiting for Laravel healthcheck to pass..."
+          for i in {1..30}; do
+            STATUS=$(docker inspect -f '{{.State.Health.Status}}' $(docker-compose ps -q app))
+            if [ "$STATUS" = "healthy" ]; then
+              echo "✅ Laravel is healthy"
+              break
+            fi
+            echo "⏳ Laravel status: $STATUS"
             sleep 5
           done
+
+          if [ "$STATUS" != "healthy" ]; then
+            echo "❌ Laravel did not become healthy in time"
+            docker-compose logs app
+            exit 1
+          fi
+
+      - name: 📋 Logs Laravel (si erreur)
+        if: failure()
+        run: docker-compose logs app
 
       - name: ⚙️ Migrations
         working-directory: backend-laravel
