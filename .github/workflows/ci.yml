@@ -152,8 +152,14 @@ jobs:
             sleep 5
           done
 
+      - name: ⚙️ Migrations
+        working-directory: backend
+        run: |
+          docker-compose exec -T backend-laravel php artisan key:generate
+          docker-compose exec -T backend-laravel php artisan migrate --seed
+
       - name: 🚀 Preview app
         run: npm run preview &
 
       - name: 🧪 Cypress E2E with Laravel
-        run: npm run test:e2e:laravel
+        run: npm run test:e2e
