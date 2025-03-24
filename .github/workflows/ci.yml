@@ -144,11 +144,12 @@ jobs:
         working-directory: backend-laravel
         run: docker-compose up -d --build
 
-      - name: ⏳ Wait for Laravel to be ready
+      - name: Wait for Laravel to be ready
         run: |
-          for i in {1..30}; do
-            curl --fail http://localhost:8000/api/plants/ && break
-            echo "⏳ Laravel not ready yet..."
+          echo "Waiting for Laravel to be ready..."
+          sleep 60  # Increase this value if needed
+          until curl --output /dev/null --silent --head --fail http://localhost:8000; do
+            echo "Laravel not ready yet..."
             sleep 5
           done
 
