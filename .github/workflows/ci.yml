@@ -131,6 +131,11 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: 🔥 Nettoyer node_modules et le cache npm
+        run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+
       - name: 📦 Install deps
         run: npm install
 
