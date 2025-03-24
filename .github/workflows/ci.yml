@@ -199,3 +199,7 @@ jobs:
 
       - name: 🧪 Cypress E2E with Laravel
         run: npm run test:e2e
+
+      - name: 📋 Logs Laravel (si erreur)
+        if: failure()
+        run: docker-compose logs app
