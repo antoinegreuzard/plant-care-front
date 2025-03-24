@@ -98,7 +98,7 @@ jobs:
           done
 
       - name: ⚙️ Migrations
-        working-directory: backend
+        working-directory: backend-django
         run: |
           docker-compose exec -T backend-django python manage.py migrate
           docker-compose exec -T backend-django python manage.py shell <<EOF
@@ -153,7 +153,7 @@ jobs:
           done
 
       - name: ⚙️ Migrations
-        working-directory: backend
+        working-directory: backend-laravel
         run: |
           docker-compose exec -T backend-laravel php artisan key:generate
           docker-compose exec -T backend-laravel php artisan migrate --seed
