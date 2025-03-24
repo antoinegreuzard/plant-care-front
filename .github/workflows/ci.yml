@@ -192,7 +192,7 @@ jobs:
 
       - name: 👤 Créer le user Laravel pour les tests E2E
         working-directory: backend-laravel
-        run: php artisan tinker --execute "App\Models\User::updateOrCreate(['email' => 'test@example.com'], ['name' => 'Test User', 'username' => 'testuser', 'password' => 'testpassword']);"
+        run: docker-compose exec -T app php artisan tinker --execute "App\Models\User::updateOrCreate(['email' => 'test@example.com'], ['name' => 'Test User', 'username' => 'testuser', 'password' => 'testpassword']);"
           
       - name: 🚀 Preview app
         run: npm run preview &
