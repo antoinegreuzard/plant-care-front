@@ -139,6 +139,9 @@ jobs:
       - name: 📦 Install deps
         run: npm install
 
+      - name: 🏗️ Lancer le build pour les tests E2E
+        run: npm run build
+
       - name: 🛎️ Clone Laravel backend
         run: git clone ${{ secrets.LARAVEL_BACKEND_REPO_URL }} backend-laravel
       
