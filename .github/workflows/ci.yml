@@ -148,8 +148,15 @@ jobs:
         working-directory: backend-laravel
         run: |
           echo "⏳ Waiting for Laravel healthcheck to pass..."
+
+          APP_ID=$(docker-compose ps -q app)
+          if [ -z "$APP_ID" ]; then
+            echo "❌ Could not find app container"
+            exit 1
+          fi
+
           for i in {1..30}; do
-            STATUS=$(docker inspect -f '{{.State.Health.Status}}' $(docker-compose ps -q app))
+            STATUS=$(docker inspect -f '{{.State.Health.Status}}' "$APP_ID")
             if [ "$STATUS" = "healthy" ]; then
               echo "✅ Laravel is healthy"
               break
