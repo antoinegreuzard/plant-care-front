@@ -198,7 +198,7 @@ jobs:
             ['email' => 'test@example.com'],
             ['name' => 'Test User', 'username' => 'testuser', 'password' => bcrypt('testpassword')]
           ); \
-          echo '✅ Utilisateur Laravel prêt : ' . \$user->email;"
+          echo '✅ Utilisateur Laravel prêt : ' . \$user->username;"
 
           
       - name: 🚀 Preview app
