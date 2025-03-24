@@ -157,7 +157,7 @@ jobs:
         working-directory: backend-laravel
         run: |
           docker-compose exec -T app php artisan jwt:secret --force
-          docker-compose exec -T app php artisan key:generate
+          docker-compose exec -T app php artisan key:generate --force
           docker-compose exec -T app php artisan migrate --seed
 
       - name: 🚀 Preview app
