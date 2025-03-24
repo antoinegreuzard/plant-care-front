@@ -100,8 +100,8 @@ jobs:
       - name: ⚙️ Migrations
         working-directory: backend-django
         run: |
-          docker-compose exec -T backend-django python manage.py migrate
-          docker-compose exec -T backend-django python manage.py shell <<EOF
+          docker-compose exec -T backend python manage.py migrate
+          docker-compose exec -T backend python manage.py shell <<EOF
           from django.contrib.auth import get_user_model
           User = get_user_model()
           if not User.objects.filter(username="testuser").exists():
@@ -155,8 +155,8 @@ jobs:
       - name: ⚙️ Migrations
         working-directory: backend-laravel
         run: |
-          docker-compose exec -T backend-laravel php artisan key:generate
-          docker-compose exec -T backend-laravel php artisan migrate --seed
+          docker-compose exec -T app php artisan key:generate
+          docker-compose exec -T app php artisan migrate --seed
 
       - name: 🚀 Preview app
         run: npm run preview &
