@@ -184,6 +184,7 @@ jobs:
         if: failure()
         run: docker-compose logs app
 
+
       - name: ⚙️ Migrations
         working-directory: backend-laravel
         run: |
@@ -195,6 +196,13 @@ jobs:
         working-directory: backend-laravel
         run: docker-compose exec -T app php artisan tinker --execute "App\Models\User::updateOrCreate(['email' => 'test@example.com'], ['name' => 'Test User', 'username' => 'testuser', 'password' => 'testpassword']);"
           
+      - name: 🔍 Test login API depuis GitHub Actions
+        working-directory: backend-laravel
+        run: |
+          docker-compose exec -T app curl -X POST http://127.0.0.1:8000/api/token/ \
+            -H "Content-Type: application/json" \
+            -d '{"username": "testuser", "password": "testpassword"}'
+
       - name: 🚀 Preview app
         run: npm run preview &
 
