@@ -82,7 +82,7 @@ jobs:
       - name: 🛎️ Clone Django backend
         run: git clone ${{ secrets.DJANGO_BACKEND_REPO_URL }} backend-django
 
-      - name: 🛠️ Installer Docker Compose
+      - name: 🛠️ Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
       - name: 🐳 Docker Compose up Django
@@ -100,8 +100,8 @@ jobs:
       - name: ⚙️ Migrations
         working-directory: backend
         run: |
-          docker-compose exec -T backend python manage.py migrate
-          docker-compose exec -T backend python manage.py shell <<EOF
+          docker-compose exec -T backend-django python manage.py migrate
+          docker-compose exec -T backend-django python manage.py shell <<EOF
           from django.contrib.auth import get_user_model
           User = get_user_model()
           if not User.objects.filter(username="testuser").exists():
@@ -136,6 +136,9 @@ jobs:
 
       - name: 🛎️ Clone Laravel backend
         run: git clone ${{ secrets.LARAVEL_BACKEND_REPO_URL }} backend-laravel
+      
+      - name: 🛠️ Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
 
       - name: 🐳 Docker Compose up Laravel
         working-directory: backend-laravel
