@@ -1,5 +1,6 @@
 import { defineConfig } from "cypress";
 import vue from '@vitejs/plugin-vue'
+import { fileURLToPath } from 'node:url'
 
 export default defineConfig({
   e2e: {
@@ -14,6 +15,11 @@ export default defineConfig({
       bundler: 'vite',
       viteConfig: {
         plugins: [vue()],
+        resolve: {
+          alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+          },
+        },
       },
     },
     specPattern: 'cypress/components/**/*.cy.ts',
