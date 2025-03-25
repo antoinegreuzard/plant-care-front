@@ -145,6 +145,13 @@ jobs:
       - name: 🛎️ Clone Laravel backend
         run: git clone ${{ secrets.LARAVEL_BACKEND_REPO_URL }} backend-laravel
       
+      - name: 🧪 Créer fichier .env si manquant
+        working-directory: backend-laravel
+        run: |
+          if [ ! -f .env ]; then
+            cp .env.example .env
+          fi
+
       - name: 🛠️ Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
