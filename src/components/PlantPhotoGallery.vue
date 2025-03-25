@@ -3,16 +3,8 @@
     <h2 class="text-xl font-bold mb-4">Galerie Photos 🌿</h2>
 
     <div class="mb-4">
-      <input
-        ref="fileInput"
-        type="file"
-        @change="handleFileUpload"
-        class="hidden"
-      />
-      <button
-        @click="triggerFileUpload"
-        class="px-4 py-2 bg-green-600 text-white rounded shadow"
-      >
+      <input ref="fileInput" type="file" @change="handleFileUpload" class="hidden" />
+      <button @click="triggerFileUpload" class="px-4 py-2 bg-green-600 text-white rounded shadow">
         Ajouter une photo
       </button>
     </div>
