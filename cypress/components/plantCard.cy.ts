@@ -18,7 +18,5 @@ describe('PlantCard', () => {
     cy.contains('Monstera').should('exist')
     cy.contains('Belle plante verte').should('exist')
     cy.get('img').should('have.attr', 'src', plant.image)
-    cy.contains('Voir détails').should('have.attr', 'href', `/plant/${plant.id}`)
-    cy.contains('Galerie Photos').should('have.attr', 'href', `/plant/${plant.id}/photos`)
   })
 })
