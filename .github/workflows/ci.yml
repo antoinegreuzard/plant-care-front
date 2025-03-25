@@ -54,9 +54,9 @@ jobs:
           curl --fail http://localhost:5173 || (docker logs plant-care-test && exit 1)
           docker stop plant-care-test
 
-  test-e2e:
+  test-e2e-django:
     runs-on: ubuntu-latest
-    needs: build-and-test  # Ne lance les tests E2E que si le build réussit
+    needs: build-and-test
 
     steps:
       - name: 🛎️ Checkout le code du frontend
@@ -79,26 +79,26 @@ jobs:
       - name: 🏗️ Lancer le build pour les tests E2E
         run: npm run build
 
-      - name: 🛎️ Cloner le backend
-        run: git clone ${{ secrets.BACKEND_REPO_URL }} backend
+      - name: 🛎️ Clone Django backend
+        run: git clone ${{ secrets.DJANGO_BACKEND_REPO_URL }} backend-django
 
-      - name: 🛠️ Installer Docker Compose
+      - name: 🛠️ Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
-      - name: 🛠️ Démarrer le backend avec Docker Compose
-        working-directory: backend
+      - name: 🐳 Docker Compose up Django
+        working-directory: backend-django
         run: docker-compose up -d
 
-      - name: 🛑 Attendre que le backend soit prêt
+      - name: ⏳ Wait for Django to be ready
         run: |
           for i in {1..30}; do
             curl --fail http://localhost:8000/health && break
-            echo "Backend non prêt, attente..."
+            echo "⏳ Django not ready yet..."
             sleep 5
           done
 
-      - name: ⚙️ Appliquer les migrations et créer le superuser
-        working-directory: backend
+      - name: ⚙️ Migrations
+        working-directory: backend-django
         run: |
           docker-compose exec -T backend python manage.py migrate
           docker-compose exec -T backend python manage.py shell <<EOF
@@ -111,8 +111,112 @@ jobs:
               print("Superuser déjà existant")
           EOF
 
-      - name: 🚀 Démarrer le serveur de prévisualisation
+      - name: 🚀 Preview app
         run: npm run preview &
 
-      - name: 🧪 Lancer les tests end-to-end avec Cypress
+      - name: 🧪 Cypress E2E with Django
         run: npm run test:e2e
+
+  test-e2e-laravel:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: 🛎️ Checkout frontend
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 🔥 Nettoyer node_modules et le cache npm
+        run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+
+      - name: 📦 Install deps
+        run: npm install
+
+      - name: 🏗️ Lancer le build pour les tests E2E
+        run: npm run build
+
+      - name: 🛎️ Clone Laravel backend
+        run: git clone ${{ secrets.LARAVEL_BACKEND_REPO_URL }} backend-laravel
+      
+      - name: 🧪 Créer fichier .env si manquant
+        working-directory: backend-laravel
+        run: |
+          if [ ! -f .env ]; then
+            cp .env.example .env
+          fi
+
+      - name: 🛠️ Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+
+      - name: 🐳 Docker Compose up Laravel
+        working-directory: backend-laravel
+        run: docker-compose up -d --build
+
+      - name: ⏳ Wait for Laravel container to be healthy
+        working-directory: backend-laravel
+        run: |
+          echo "⏳ Waiting for Laravel healthcheck to pass..."
+
+          APP_ID=$(docker-compose ps -q app)
+          if [ -z "$APP_ID" ]; then
+            echo "❌ Could not find app container"
+            exit 1
+          fi
+
+          for i in {1..30}; do
+            STATUS=$(docker inspect -f '{{.State.Health.Status}}' "$APP_ID")
+            if [ "$STATUS" = "healthy" ]; then
+              echo "✅ Laravel is healthy"
+              break
+            fi
+            echo "⏳ Laravel status: $STATUS"
+            sleep 5
+          done
+
+          if [ "$STATUS" != "healthy" ]; then
+            echo "❌ Laravel did not become healthy in time"
+            docker-compose logs app
+            exit 1
+          fi
+
+      - name: 📋 Logs Laravel (si erreur)
+        working-directory: backend-laravel
+        if: failure()
+        run: docker-compose logs app
+
+
+      - name: ⚙️ Migrations
+        working-directory: backend-laravel
+        run: |
+          docker-compose exec -T app php artisan jwt:secret --force
+          docker-compose exec -T app php artisan key:generate --force
+          docker-compose exec -T app php artisan migrate --seed
+
+      - name: 👤 Créer le user Laravel pour les tests E2E
+        working-directory: backend-laravel
+        run: docker-compose exec -T app php artisan tinker --execute "App\Models\User::updateOrCreate(['email' => 'test@example.com'], ['name' => 'Test User', 'username' => 'testuser', 'password' => 'testpassword']);"
+          
+      - name: 🔍 Test login API depuis GitHub Actions
+        working-directory: backend-laravel
+        run: |
+          docker-compose exec -T app curl -X POST http://127.0.0.1:8000/api/token/ \
+            -H "Content-Type: application/json" \
+            -d '{"username": "testuser", "password": "testpassword"}'
+
+      - name: 🚀 Preview app
+        run: npm run preview &
+
+      - name: 🧪 Cypress E2E with Laravel
+        run: npm run test:e2e
+
+      - name: 📋 Logs Laravel (si erreur)
+        working-directory: backend-laravel
+        if: failure()
+        run: docker-compose logs app
