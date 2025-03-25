@@ -1,7 +1,7 @@
 # 🌿 Plant Care Front
 
 ## 📌 Description
-Plant Care Front est une application web développée avec **Vue 3** et **TypeScript**. Elle permet de gérer un jardin virtuel, d'ajouter et consulter des plantes, et d'interagir avec un backend Django.
+Plant Care Front est une application web développée avec **Vue 3** et **TypeScript**. Elle permet de gérer un jardin virtuel, d'ajouter et consulter des plantes, et d'interagir avec un backend.
 
 ## 🚀 Fonctionnalités
 - 📜 Liste des plantes disponibles
@@ -9,6 +9,7 @@ Plant Care Front est une application web développée avec **Vue 3** et **TypeSc
 - 🔍 Détails des plantes
 - 🔐 Authentification des utilisateurs
 - 📊 Intégration avec un backend Django
+- 📊 Intégration avec un backend Laravel
 
 ---
 
