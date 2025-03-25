@@ -26,3 +26,16 @@ describe('Login', () => {
     cy.contains('Connexion', { timeout: 5000 }).should('exist')
   })
 })
+
+describe('Protection des routes', () => {
+  const protectedRoutes = ['/', '/add-plant', '/plant/1']
+
+  protectedRoutes.forEach((route) => {
+    it(`redirection vers /login depuis ${route} sans token`, () => {
+      localStorage.removeItem('jwt')
+      cy.visit(route)
+      cy.url().should('include', '/login')
+    })
+  })
+})
+
