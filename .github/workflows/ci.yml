@@ -214,7 +214,7 @@ jobs:
         run: npm run preview &
 
       - name: 🧪 Cypress E2E with Laravel
-        run: npm run test:e2e
+        run: npm run test:all
 
       - name: 📋 Logs Laravel (si erreur)
         working-directory: backend-laravel
