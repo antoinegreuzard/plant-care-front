@@ -220,3 +220,75 @@ jobs:
         working-directory: backend-laravel
         if: failure()
         run: docker-compose logs app
+
+  test-e2e-symfony:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: 🛎️ Checkout frontend
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 🔥 Nettoyer node_modules et le cache npm
+        run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+
+      - name: 📦 Installer les dépendances
+        run: npm install
+
+      - name: 🏗️ Lancer le build pour les tests E2E
+        run: npm run build
+
+      - name: 🛎️ Clone Symfony backend
+        run: git clone ${{ secrets.SYMFONY_BACKEND_REPO_URL }} backend-symfony
+
+      - name: 🛠️ Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+
+      - name: 🐳 Docker Compose up Symfony
+        working-directory: backend-symfony
+        run: docker-compose up -d --build
+
+      - name: ⏳ Wait for Symfony to be ready
+        run: |
+          for i in {1..30}; do
+            curl --fail http://localhost:8000/ && break
+            echo "⏳ Symfony not ready yet..."
+            sleep 5
+          done
+
+      - name: ⚙️ Migrations et Fixtures
+        working-directory: backend-symfony
+        run: |
+          docker-compose exec -T php bin/console doctrine:migrations:migrate --no-interaction
+          docker-compose exec -T php bin/console doctrine:fixtures:load --no-interaction
+
+      - name: 🔑 Créer utilisateur Symfony
+        working-directory: backend-symfony
+        run: |
+          docker-compose exec -T php bin/console app:create-user testuser testpassword test@example.com
+
+      - name: 🔍 Test login API depuis GitHub Actions
+        working-directory: backend-symfony
+        run: |
+          docker-compose exec -T php curl -X POST http://127.0.0.1:8000/api/token \
+            -H "Content-Type: application/json" \
+            -d '{"username": "testuser", "password": "testpassword"}'
+
+      - name: 🚀 Preview app
+        run: npm run preview &
+
+      - name: 🧪 Cypress E2E with Symfony
+        run: npm run test:all
+
+      - name: 📋 Logs Symfony (si erreur)
+        working-directory: backend-symfony
+        if: failure()
+        run: docker-compose logs php
