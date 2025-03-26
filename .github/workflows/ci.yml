@@ -256,6 +256,10 @@ jobs:
         working-directory: backend-symfony
         run: docker-compose up -d --build
 
+      - name: 📦 Installer dépendances Symfony
+        working-directory: backend-symfony
+        run: docker-compose exec -T php composer install --no-interaction --no-progress
+
       - name: ⏳ Wait for Symfony to be ready
         run: |
           for i in {1..30}; do
@@ -267,6 +271,7 @@ jobs:
       - name: ⚙️ Migrations et Fixtures
         working-directory: backend-symfony
         run: |
+          docker-compose exec -T php bin/console doctrine:database:create --if-not-exists
           docker-compose exec -T php bin/console doctrine:migrations:migrate --no-interaction
           docker-compose exec -T php bin/console doctrine:fixtures:load --no-interaction
 
