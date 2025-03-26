@@ -260,6 +260,13 @@ jobs:
         working-directory: backend-symfony
         run: docker-compose exec -T php composer install --no-interaction --no-progress
 
+      - name: 🔐 Générer les clés JWT
+        working-directory: backend-symfony
+        run: |
+          docker-compose exec -T php mkdir -p config/jwt
+          docker-compose exec -T php openssl genpkey -algorithm RSA -out config/jwt/private.pem -pkeyopt rsa_keygen_bits:4096
+          docker-compose exec -T php openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
+
       - name: ⏳ Wait for Symfony to be ready
         run: |
           for i in {1..30}; do
