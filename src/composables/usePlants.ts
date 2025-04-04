@@ -19,17 +19,16 @@ export function usePlants() {
     error.value = ''
 
     try {
-      const { data } = await api.get<ApiResponse>('/plants')
+      const { data } = await api.get<ApiResponse>('/plants/')
 
-      if (data.results.length > 0) {
-        plants.value = data.results.map((plant) => ({
-          ...plant,
-          description: plant.description || 'Pas de description disponible.',
-          image: plant.image || '/default-plant.jpg',
-          lastWatered: plant.last_watering || 'Date inconnue',
-        }))
-      } else {
-        plants.value = []
+      plants.value = data.results.map((plant) => ({
+        ...plant,
+        description: plant.description || 'Pas de description disponible.',
+        image: plant.image || '/default-plant.jpg',
+        last_watering: plant.last_watering || 'Date inconnue',
+      }))
+
+      if (data.results.length === 0) {
         error.value = 'Aucune plante trouvée.'
       }
     } catch (err) {
@@ -39,7 +38,6 @@ export function usePlants() {
       loading.value = false
     }
   }
-
   fetchPlants() // Chargement automatique initial
 
   return { plants, loading, error, fetchPlants }

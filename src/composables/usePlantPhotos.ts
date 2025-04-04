@@ -25,7 +25,6 @@ export function usePlantPhotos(plantId: number | string) {
   const uploadPhoto = async (file: File) => {
     const formData = new FormData()
     formData.append('image', file)
-    formData.append('plant', String(plantId))
 
     loading.value = true
     error.value = ''
