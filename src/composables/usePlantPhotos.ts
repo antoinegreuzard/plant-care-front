@@ -2,13 +2,6 @@ import { ref } from 'vue'
 import api from '@/services/api'
 import type { Photo } from '@/types'
 
-interface PhotosApiResponse {
-  results: Photo[]
-  count: number
-  next: string | null
-  previous: string | null
-}
-
 export function usePlantPhotos(plantId: number | string) {
   const photos = ref<Photo[]>([])
   const loading = ref(false)
@@ -19,8 +12,8 @@ export function usePlantPhotos(plantId: number | string) {
     error.value = ''
 
     try {
-      const { data } = await api.get<PhotosApiResponse>(`plants/${plantId}/photos/`)
-      photos.value = data.results
+      const { data } = await api.get<Photo[]>(`plants/${plantId}/photos/`)
+      photos.value = data
     } catch (err) {
       error.value = 'Erreur lors du chargement des photos.'
       console.error(err)
@@ -32,7 +25,6 @@ export function usePlantPhotos(plantId: number | string) {
   const uploadPhoto = async (file: File) => {
     const formData = new FormData()
     formData.append('image', file)
-    formData.append('plant', String(plantId))
 
     loading.value = true
     error.value = ''

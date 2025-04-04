@@ -12,7 +12,7 @@
     <div v-if="loading" class="text-gray-500">Chargement...</div>
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
-    <div v-else-if="photos.length" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div v-else-if="photos.length > 0" class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <img
         v-for="photo in photos"
         :key="photo.id"
