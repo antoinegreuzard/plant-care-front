@@ -2,6 +2,13 @@ import { ref } from 'vue'
 import api from '@/services/api'
 import type { Photo } from '@/types'
 
+interface PhotosApiResponse {
+  results: Photo[]
+  count: number
+  next: string | null
+  previous: string | null
+}
+
 export function usePlantPhotos(plantId: number | string) {
   const photos = ref<Photo[]>([])
   const loading = ref(false)
@@ -12,8 +19,8 @@ export function usePlantPhotos(plantId: number | string) {
     error.value = ''
 
     try {
-      const { data } = await api.get<Photo[]>(`plants/${plantId}/photos/`)
-      photos.value = data
+      const { data } = await api.get<PhotosApiResponse>(`plants/${plantId}/photos/`)
+      photos.value = data.results
     } catch (err) {
       error.value = 'Erreur lors du chargement des photos.'
       console.error(err)

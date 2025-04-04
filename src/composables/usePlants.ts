@@ -19,22 +19,35 @@ export function usePlants() {
     error.value = ''
 
     try {
-      const { data } = await api.get<ApiResponse>('/plants')
+      const { data } = await api.get<ApiResponse>('/plants/')
 
-      if (data.results.length > 0) {
-        plants.value = data.results.map((plant) => ({
-          ...plant,
-          description: plant.description || 'Pas de description disponible.',
-          image: plant.image || '/default-plant.jpg',
-          lastWatered: plant.last_watering || 'Date inconnue',
-        }))
-      } else {
-        plants.value = []
+      plants.value = data.results.map((plant) => ({
+        ...plant,
+        description: plant.description || 'Pas de description disponible.',
+        image: plant.image || '/default-plant.jpg',
+        last_watering: plant.last_watering || 'Date inconnue',
+      }))
+
+      if (data.results.length === 0) {
         error.value = 'Aucune plante trouvée.'
       }
     } catch (err) {
       console.error(err)
       error.value = 'Erreur lors du chargement des plantes.'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const updatePlant = async (plantId: number, updatedData: Partial<Plant>) => {
+    loading.value = true
+    error.value = ''
+    try {
+      const { data } = await api.patch<Plant>(`/plants/${plantId}/`, updatedData)
+      plants.value = plants.value.map((p) => (p.id === plantId ? data : p))
+    } catch (err) {
+      error.value = 'Erreur lors de la modification de la plante.'
+      throw err
     } finally {
       loading.value = false
     }
