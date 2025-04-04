@@ -38,21 +38,6 @@ export function usePlants() {
       loading.value = false
     }
   }
-
-  const updatePlant = async (plantId: number, updatedData: Partial<Plant>) => {
-    loading.value = true
-    error.value = ''
-    try {
-      const { data } = await api.patch<Plant>(`/plants/${plantId}/`, updatedData)
-      plants.value = plants.value.map((p) => (p.id === plantId ? data : p))
-    } catch (err) {
-      error.value = 'Erreur lors de la modification de la plante.'
-      throw err
-    } finally {
-      loading.value = false
-    }
-  }
-
   fetchPlants() // Chargement automatique initial
 
   return { plants, loading, error, fetchPlants }
