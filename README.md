@@ -10,6 +10,7 @@ Plant Care Front est une application web développée avec **Vue 3** et **TypeSc
 - 🔐 Authentification des utilisateurs
 - 📊 Intégration avec un backend Django
 - 📊 Intégration avec un backend Laravel
+- 📊 Intégration avec un backend Symfony
 
 ---
 
