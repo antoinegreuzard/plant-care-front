@@ -118,7 +118,17 @@ jobs:
       - name: 🚀 Preview app
         run: npm run preview &
 
+      - name: 🧼 Clean and launch Xvfb on display :98
+        run: |
+          pkill Xvfb || true
+          rm -f /tmp/.X*-lock
+          Xvfb :98 -screen 0 1280x1024x16 > /dev/null 2>&1 &
+          export DISPLAY=:98
+          echo "Xvfb lancé sur le display :98"
+
       - name: 🧪 Cypress E2E with Django
+        env:
+          DISPLAY: :98
         run: npm run test:all
 
   test-e2e-laravel:
@@ -217,7 +227,17 @@ jobs:
       - name: 🚀 Preview app
         run: npm run preview &
 
+      - name: 🧼 Clean and launch Xvfb on display :98
+        run: |
+          pkill Xvfb || true
+          rm -f /tmp/.X*-lock
+          Xvfb :98 -screen 0 1280x1024x16 > /dev/null 2>&1 &
+          export DISPLAY=:98
+          echo "Xvfb lancé sur le display :98"
+
       - name: 🧪 Cypress E2E with Laravel
+        env:
+          DISPLAY: :98
         run: npm run test:all
 
       - name: 📋 Logs Laravel (si erreur)
@@ -302,9 +322,19 @@ jobs:
       - name: 🚀 Preview app
         run: npm run preview &
 
-      - name: 🧪 Cypress E2E with Symfony
-        run: npm run test:all
+      - name: 🧼 Clean and launch Xvfb on display :98
+        run: |
+          pkill Xvfb || true
+          rm -f /tmp/.X*-lock
+          Xvfb :98 -screen 0 1280x1024x16 > /dev/null 2>&1 &
+          export DISPLAY=:98
+          echo "Xvfb lancé sur le display :98"
 
+      - name: 🧪 Cypress E2E with Symfony
+        env:
+          DISPLAY: :98
+        run: npm run test:all
+        
       - name: 📋 Logs Symfony (si erreur)
         working-directory: backend-symfony
         if: failure()
