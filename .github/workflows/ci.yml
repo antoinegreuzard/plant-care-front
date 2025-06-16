@@ -118,6 +118,13 @@ jobs:
       - name: 🚀 Preview app
         run: npm run preview &
 
+      - name: 🧹 Clean up Xvfb if needed
+        run: |
+          echo "Killing any stray Xvfb processes..."
+          pkill Xvfb || true
+          echo "Removing any stale X lock files..."
+          rm -f /tmp/.X99-lock /tmp/.X*-lock
+
       - name: 🧪 Cypress E2E with Django
         run: npm run test:all
 
